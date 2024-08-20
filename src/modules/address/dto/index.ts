@@ -1,4 +1,3 @@
-import {FriendDTO} from "@modules/friends/dto";
 import {IsNotEmpty, IsOptional, IsString} from "class-validator";
 
 export class CreateAddressDTO {
