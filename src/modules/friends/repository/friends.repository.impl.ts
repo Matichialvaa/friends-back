@@ -6,14 +6,30 @@ export class FriendsRepositoryImpl implements FriendsRepository {
     constructor(private readonly db: PrismaClient) {}
 
     async create(data: CreateFriendDTO): Promise<FriendDTO> {
+        const { addresses, ...rest } = data;
         const friend = await this.db.friend.create({
-            data
-        })
+            data: {
+                ...rest,
+                addresses: {
+                    create: addresses || []
+                }
+            },
+            include: {
+                addresses: true
+            }
+        });
         return new FriendDTO(friend)
     }
 
     async getAll(): Promise<FriendDTO[]> {
-        const friends = await this.db.friend.findMany();
+        // @ts-ignore
+        const friends = await this.db.friend.findMany(
+            {
+                include: {
+                    addresses: true
+                }
+            }
+        );
         return friends.map(friend => new FriendDTO(friend))
     }
 
